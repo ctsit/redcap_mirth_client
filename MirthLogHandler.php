@@ -3,11 +3,13 @@
 require_once 'vendor/autoload.php';
 use Monolog\Logger;
 use Monolog\Handler\AbstractProcessingHandler;
+use ExternalModules\AbstractExternalModule;
 
 class MirthLogHandler extends AbstractProcessingHandler {
 
   public function __construct($level = Logger::INFO, $bubble = true) {
     parent::__construct($level, $bubble);
+    $this->initialize();
   }
 
   protected function write(array $record) {
@@ -31,6 +33,19 @@ class MirthLogHandler extends AbstractProcessingHandler {
     extract($data);
     return "INSERT INTO redcap_mirth_client_log (project_id, method, uri, status_code, request, response, datetime) VALUES ($project_id, '$method', '$uri', '$status_code', '$request', '$response', '$datetime')";
   }
+
+  private function initialize() {
+    AbstractExternalModule::query("CREATE TABLE IF NOT EXISTS redcap_mirth_client_log (
+        project_id INTEGER,
+        method VARCHAR(7),
+        uri TEXT,
+        status_code VARCHAR(3),
+        request TEXT,
+        response TEXT,
+        datetime TIMESTAMP
+    )");
+  }
+
 
 }
 
