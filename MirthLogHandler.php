@@ -21,10 +21,9 @@ class MirthLogHandler extends AbstractProcessingHandler {
     return array(
       'method' => $matches[0],
       'uri' => $matches[1],
-      'version' => $matches[2],
-      'status_code' => $matches[3],
-      'request' => $matches[4],
-      'response' => $matches[5]
+      'status_code' => $matches[2],
+      'request' => $matches[3],
+      'response' => $matches[4]
     );
   }
 
