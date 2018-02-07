@@ -15,7 +15,14 @@ class MirthLogHandler extends AbstractProcessingHandler {
   }
 
   protected function write(array $record) {
+    //build and consolidate data to store in db
+    $data = $this->parse_message($record['message']);
+    $data['project_id'] = $this->project_id;
+    $data['datetime'] = $record['datetime']->format('Y-m-d H:i:s');
 
+    //store in db
+    $query = $this->construct_query($data);
+    AbstractExternalModule::query($query);
   }
 
   //parses the backslash delimeted log message for the desired data
