@@ -6,10 +6,12 @@ use Monolog\Handler\AbstractProcessingHandler;
 use ExternalModules\AbstractExternalModule;
 
 class MirthLogHandler extends AbstractProcessingHandler {
+    private $project_id;
 
-  public function __construct($level = Logger::INFO, $bubble = true) {
+  public function __construct($project_id, $level = Logger::INFO, $bubble = true) {
     parent::__construct($level, $bubble);
     $this->initialize();
+    $this->project_id = $project_id;
   }
 
   protected function write(array $record) {
