@@ -6,8 +6,14 @@
 
 namespace REDCapMirthClient;
 
-require 'vendor/autoload.php';
+require_once 'vendor/autoload.php';
+require_once 'MirthLogHandler.php';
+
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\MessageFormatter;
+use Monolog\Logger;
 
 
 /**
@@ -18,11 +24,25 @@ class REDCapMirthClient {
 	private $client;
 
 	function __construct($base_url) {
-		$this->client = new Client(['base_uri' => $base_url]);
+		//create a stack to store middleware
+		$stack = HandlerStack::create();
+
+		//create middleware that logs client requests and the responses it gets
+		$logger = new Logger('database logger');
+		$logger->pushHandler(new \MirthLogHandler($_REQUEST['pid']));
+		$stack->push(
+    Middleware::log(
+        $logger,
+				new MessageFormatter('{method}\\{uri}\\{code}\\{request}\\{response}')
+				)
+		);
+
+		//create the actual client that sends out the API calls
+		$this->client = new Client(['base_uri' => $base_url, 'handler' => $stack]);
 	}
 
 	function request($method, $extension, $body) {
-		return $this->client->request($method, $extension, ["body" => $body]);
+		return $this->client->request($method, $extension, ['body' => $body]);
 	}
 
 	function get($extension) {
@@ -34,10 +54,10 @@ class REDCapMirthClient {
 	}
 
 	function post($extension, $body) {
-		return $this->client->request('POST', $extension, ["body" => $body]);
+		return $this->client->request('POST', $extension, ['body' => $body]);
 	}
 
 	function put($extension, $body) {
-		return $this->client->request('PUT', $extension, ["body" => $body]);
+		return $this->client->request('PUT', $extension, ['body' => $body]);
 	}
 }
