@@ -50,7 +50,6 @@ class REDCapMirthClient {
 		try {
 				return $this->client->request($method, $extension, ['body' => $body]);
 		} catch(ConnectException $e) {
-				echo "<b>Connect exception</b>";
 				$response = $e->getMessage();
 				$request = $e->getRequest();
 				$method = $request->getMethod();
