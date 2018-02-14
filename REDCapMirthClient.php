@@ -13,6 +13,9 @@ use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\MessageFormatter;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ConnectException;
+use Psr\Http\Message\RequestInterface;
 use Monolog\Logger;
 
 
@@ -22,17 +25,19 @@ use Monolog\Logger;
 class REDCapMirthClient {
 
 	private $client;
+	private $logger;
 
 	function __construct($base_url) {
 		//create a stack to store middleware
 		$stack = HandlerStack::create();
 
 		//create middleware that logs client requests and the responses it gets
-		$logger = new Logger('database logger');
-		$logger->pushHandler(new \MirthLogHandler($_REQUEST['pid']));
+		$this->logger = new Logger('database logger');
+		$this->logger->pushHandler(new \MirthLogHandler($_REQUEST['pid']));
+
 		$stack->push(
     Middleware::log(
-        $logger,
+        $this->logger,
 				new MessageFormatter('{method}\\{uri}\\{code}\\{request}\\{response}')
 				)
 		);
@@ -42,7 +47,18 @@ class REDCapMirthClient {
 	}
 
 	function request($method, $extension, $body) {
-		return $this->client->request($method, $extension, ['body' => $body]);
+		try {
+				return $this->client->request($method, $extension, ['body' => $body]);
+		} catch(ConnectException $e) {
+				echo "<b>Connect exception</b>";
+				$response = $e->getMessage();
+				$request = $e->getRequest();
+				$method = $request->getMethod();
+				$uri = $request->getUri();
+
+				$message = "$method\\$uri\\NULL\\Unavailable\\$response";
+				$this->logger->error($message);
+		}
 	}
 
 	function get($extension) {

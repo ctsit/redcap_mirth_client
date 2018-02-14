@@ -6,7 +6,7 @@ use Monolog\Handler\AbstractProcessingHandler;
 use ExternalModules\AbstractExternalModule;
 
 class MirthLogHandler extends AbstractProcessingHandler {
-    private $project_id;
+  private $project_id;
 
   public function __construct($project_id, $level = Logger::INFO, $bubble = true) {
     parent::__construct($level, $bubble);
@@ -15,6 +15,12 @@ class MirthLogHandler extends AbstractProcessingHandler {
   }
 
   protected function write(array $record) {
+    //ignore log messages with the following level, they will be written later
+    //with a different level due to error handling reasons.
+    if ($record['level'] == 250) {
+      return;
+    }
+
     //build and consolidate data to store in db
     $data = $this->parse_message($record['message']);
     $data['project_id'] = $this->project_id;
