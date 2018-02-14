@@ -30,5 +30,14 @@
             "institution": "CTS-IT - University of Florida"
         }
     ],
-    "system-settings": []
+    "system-settings": [],
+    "links": {
+      "control-center": [
+        {
+          "name": "Mirth Logs",
+          "icon": "report",
+          "url": "MirthLog.php"
+        }
+      ]
+    }
 }
