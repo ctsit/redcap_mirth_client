@@ -4,8 +4,13 @@ use ExternalModules\ExternalModules;
 
 require_once APP_PATH_DOCROOT . 'ControlCenter/header.php';
 
+$limiter = "";
+if($_GET['pid']){
+  $limiter = " where project_id=" . $_GET['pid'];
+}
+
 //get logs
-$sql = "select * from redcap_mirth_client_log";
+$sql = "select * from redcap_mirth_client_log" . $limiter;
 $result = ExternalModules::query($sql);
 
 //convery mysqli obj into associative array
