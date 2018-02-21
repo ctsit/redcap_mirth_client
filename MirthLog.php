@@ -4,6 +4,7 @@ use ExternalModules\ExternalModules;
 
 require_once APP_PATH_DOCROOT . 'ControlCenter/header.php';
 
+//limit to only logs for a specific project if in a project scope
 $limiter = "";
 if($_GET['pid']){
   $limiter = " where project_id=" . $_GET['pid'];
@@ -13,7 +14,7 @@ if($_GET['pid']){
 $sql = "select * from redcap_mirth_client_log" . $limiter;
 $result = ExternalModules::query($sql);
 
-//convery mysqli obj into associative array
+//convert mysqli obj into associative array
 $data = [];
 while($row = $result->fetch_assoc()) {
   $data[] = $row;
@@ -48,7 +49,10 @@ while($row = $result->fetch_assoc()) {
   </table>
 </div>
 
-<?php foreach($data as $log_number => $log) { ?>
+<?php
+  //create modals that display detailed info about the response and requests
+  foreach($data as $log_number => $log) {
+?>
 <div class="modal fade" id="log<?= $log_number ?>" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
