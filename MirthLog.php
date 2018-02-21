@@ -22,7 +22,7 @@ $sql = "select * from redcap_mirth_client_log"
        . " ORDER BY datetime DESC"
        . " LIMIT " . MIRTH_CLIENT_LOGS_MAX_LIST_SIZE
        . " OFFSET " . (($curr_page - 1) * MIRTH_CLIENT_LOGS_MAX_LIST_SIZE);
-$result = ExternalModules\ExternalModules::query($sql);
+$result = $module->query($sql);
 
 //convert mysqli obj into associative array
 $data = [];
@@ -90,7 +90,7 @@ while($row = $result->fetch_assoc()) {
 
 <?php
   //get number of log entries
-  $result = ExternalModules\ExternalModules::query("select COUNT(*) as total_rows from redcap_mirth_client_log" . $limiter);
+  $result = $module->query("select COUNT(*) as total_rows from redcap_mirth_client_log" . $limiter);
   $total_rows = $result->fetch_assoc();
   $total_rows = $total_rows['total_rows'];
 
