@@ -62,7 +62,7 @@ while($row = $result->fetch_assoc()) {
         </tr>
     </thead>
     <tbody>
-    <?php foreach($data as $log_number => $log) { ?>
+    <?php foreach($data as $log_number => $log): ?>
       <tr>
       <td><?= $log['project_id'] ?></td>
       <td><?= $log['method'] ?></td>
@@ -71,13 +71,13 @@ while($row = $result->fetch_assoc()) {
       <td><?= $log['datetime'] ?></td>
       <td><button type='button' class='btn btn-info' data-toggle='modal' data-target='#log<?= $log_number ?>'>see details</button></td>
       </tr>
-    <?php } ?>
+    <?php endforeach; ?>
     </tbody>
   </table>
 </div>
 
 <!-- Mirth Modals for "see detail" buttons -->
-<?php foreach($data as $log_number => $log) { ?>
+<?php foreach($data as $log_number => $log): ?>
 <div class="modal fade" id="log<?= $log_number ?>" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -101,7 +101,7 @@ while($row = $result->fetch_assoc()) {
     </div>
   </div>
 </div>
-<?php } ?>
+<?php endforeach; ?>
 
 <!--Nav bar used for pagination -->
 <nav aria-label="Mirth Client Logs Navigation">
