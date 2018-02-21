@@ -1,8 +1,14 @@
 <?php
 
-use ExternalModules\ExternalModules;
-
 require_once APP_PATH_DOCROOT . 'ControlCenter/header.php';
+
+define('MIRTH_CLIENT_LOGS_MAX_LIST_SIZE', 25);
+define('MIRTH_CLIENT_LOGS_MAX_PAGER_SIZE', 10);
+
+$module = new REDCapMirthClient\ExternalModule\ExternalModule();
+
+//set up pagination
+$curr_page = empty($_GET['pager']) ? 1 : $_GET['pager'];
 
 //limit to only logs for a specific project if in a project scope
 $limiter = "";
@@ -11,8 +17,12 @@ if($_GET['pid']){
 }
 
 //get logs
-$sql = "select * from redcap_mirth_client_log" . $limiter;
-$result = ExternalModules::query($sql);
+$sql = "select * from redcap_mirth_client_log"
+       . $limiter
+       . " ORDER BY datetime DESC"
+       . " LIMIT " . MIRTH_CLIENT_LOGS_MAX_LIST_SIZE
+       . " OFFSET " . (($curr_page - 1) * MIRTH_CLIENT_LOGS_MAX_LIST_SIZE);
+$result = ExternalModules\ExternalModules::query($sql);
 
 //convert mysqli obj into associative array
 $data = [];
@@ -79,5 +89,33 @@ while($row = $result->fetch_assoc()) {
 <?php } ?>
 
 <?php
-require_once APP_PATH_DOCROOT . 'ControlCenter/footer.php';
- ?>
+  //get number of log entries
+  $result = ExternalModules\ExternalModules::query("select COUNT(*) as total_rows from redcap_mirth_client_log" . $limiter);
+  $total_rows = $result->fetch_assoc();
+  $total_rows = $total_rows['total_rows'];
+
+  //calculate the total number of pages
+  $num_pages = (int) ($total_rows / MIRTH_CLIENT_LOGS_MAX_LIST_SIZE);
+  if ($total_rows % MIRTH_CLIENT_LOGS_MAX_LIST_SIZE) {
+      $num_pages++;
+  }
+
+  //calculate the pager size.
+  $pager_size = MIRTH_CLIENT_LOGS_MAX_PAGER_SIZE;
+  if ($num_pages < $pager_size) {
+      $pager_size = $num_pages;
+  }
+
+?>
+
+<nav aria-label="Mirth Client Logs Navigation">
+    <ul class="pagination">
+        <?php for($i = 1; $i <= $pager_size; $i++): ?>
+          <li class="page-item <?php echo ($i == $curr_page) ? "active" : "" ?>">
+            <a class="page-link" href="<?= $module->getUrl("MirthLog.php") . "&pager=" . $i ?>"><?= $i ?></a>
+          </li>
+        <?php endfor; ?>
+    </ul>
+</nav>
+
+<?php require_once APP_PATH_DOCROOT . 'ControlCenter/footer.php'; ?>
