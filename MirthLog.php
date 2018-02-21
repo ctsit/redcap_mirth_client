@@ -7,16 +7,33 @@ define('MIRTH_CLIENT_LOGS_MAX_PAGER_SIZE', 10);
 
 $module = new REDCapMirthClient\ExternalModule\ExternalModule();
 
-//set up pagination
+//Determine current page for pagination
 $curr_page = empty($_GET['pager']) ? 1 : $_GET['pager'];
 
-//limit to only logs for a specific project if in a project scope
+//limit page to only show logs for a specific project if in a project scope
 $limiter = "";
 if($_GET['pid']){
   $limiter = " where project_id=" . $_GET['pid'];
 }
 
-//get logs
+//get number of log entries
+$result = $module->query("select COUNT(*) as total_rows from redcap_mirth_client_log" . $limiter);
+$total_rows = $result->fetch_assoc();
+$total_rows = $total_rows['total_rows'];
+
+//calculate the total number of pages
+$num_pages = (int) ($total_rows / MIRTH_CLIENT_LOGS_MAX_LIST_SIZE);
+if ($total_rows % MIRTH_CLIENT_LOGS_MAX_LIST_SIZE) {
+    $num_pages++;
+}
+
+//calculate the pager size.
+$pager_size = MIRTH_CLIENT_LOGS_MAX_PAGER_SIZE;
+if ($num_pages < $pager_size) {
+    $pager_size = $num_pages;
+}
+
+//get actual log entries
 $sql = "select * from redcap_mirth_client_log"
        . $limiter
        . " ORDER BY datetime DESC"
@@ -29,9 +46,9 @@ $data = [];
 while($row = $result->fetch_assoc()) {
   $data[] = $row;
 }
-
-//print table
 ?>
+
+<!-- Mirth Log Table -->
 <div class='table-responsive'>
   <table class='table table-striped'>
     <thead>
@@ -59,10 +76,8 @@ while($row = $result->fetch_assoc()) {
   </table>
 </div>
 
-<?php
-  //create modals that display detailed info about the response and requests
-  foreach($data as $log_number => $log) {
-?>
+<!-- Mirth Modals for "see detail" buttons -->
+<?php foreach($data as $log_number => $log) { ?>
 <div class="modal fade" id="log<?= $log_number ?>" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -88,26 +103,7 @@ while($row = $result->fetch_assoc()) {
 </div>
 <?php } ?>
 
-<?php
-  //get number of log entries
-  $result = $module->query("select COUNT(*) as total_rows from redcap_mirth_client_log" . $limiter);
-  $total_rows = $result->fetch_assoc();
-  $total_rows = $total_rows['total_rows'];
-
-  //calculate the total number of pages
-  $num_pages = (int) ($total_rows / MIRTH_CLIENT_LOGS_MAX_LIST_SIZE);
-  if ($total_rows % MIRTH_CLIENT_LOGS_MAX_LIST_SIZE) {
-      $num_pages++;
-  }
-
-  //calculate the pager size.
-  $pager_size = MIRTH_CLIENT_LOGS_MAX_PAGER_SIZE;
-  if ($num_pages < $pager_size) {
-      $pager_size = $num_pages;
-  }
-
-?>
-
+<!--Nav bar used for pagination -->
 <nav aria-label="Mirth Client Logs Navigation">
     <ul class="pagination">
         <?php for($i = 1; $i <= $pager_size; $i++): ?>
