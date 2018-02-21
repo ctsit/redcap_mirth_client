@@ -32,6 +32,13 @@
     ],
     "system-settings": [],
     "links": {
+      "project": [
+        {
+          "name": "Mirth Logs",
+          "icon": "report",
+          "url": "MirthLog.php"
+        }
+      ],
       "control-center": [
         {
           "name": "Mirth Logs",
