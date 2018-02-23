@@ -1,6 +1,6 @@
 <?php
 
-require_once APP_PATH_DOCROOT . 'ControlCenter/header.php';
+require_once \ExternalModules\ExternalModules::getProjectHeaderPath();
 
 define('MIRTH_CLIENT_LOGS_MAX_LIST_SIZE', 25);
 define('MIRTH_CLIENT_LOGS_MAX_PAGER_SIZE', 10);
@@ -113,5 +113,3 @@ while($row = $result->fetch_assoc()) {
         <?php endfor; ?>
     </ul>
 </nav>
-
-<?php require_once APP_PATH_DOCROOT . 'ControlCenter/footer.php'; ?>
