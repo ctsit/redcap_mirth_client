@@ -46,7 +46,7 @@ class MirthLogHandler extends AbstractProcessingHandler {
 
   private function construct_query(array $data) {
     extract($data);
-    return "INSERT INTO redcap_mirth_client_log (project_id, method, uri, status_code, request, response, datetime) VALUES ($project_id, '$method', '$uri', '$status_code', '$request', '$response', '$datetime')";
+    return "INSERT INTO redcap_mirth_client_log (project_id, method, uri, status_code, request, response, datetime) VALUES ('$project_id', '$method', '$uri', '$status_code', '$request', '$response', '$datetime')";
   }
 
   private function initialize() {
