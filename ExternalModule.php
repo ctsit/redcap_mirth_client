@@ -8,11 +8,21 @@ namespace REDCapMirthClient\ExternalModule;
 
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
+use REDCapMirthClient;
 
 /**
  * ExternalModule class for REDCap Mirth Connect Client.
  */
 class ExternalModule extends AbstractExternalModule {
+
+  /**
+   * Takes in an the base url of the API as an input.
+   * returns a REDCapMirthClient object that can be used to send API requests.
+   */
+  function getClient($base_url) {
+    return new REDCapMirthClient($base_url);
+  }
+
   /**
    * Clean up old logs based on an configured expiration time.
    */
