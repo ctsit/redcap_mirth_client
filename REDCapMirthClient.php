@@ -13,9 +13,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\MessageFormatter;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ConnectException;
-use Psr\Http\Message\RequestInterface;
+use GuzzleHttp\Exception\BadResponseException;
 use Monolog\Logger;
 
 
@@ -26,6 +25,7 @@ class REDCapMirthClient {
 
 	private $client;
 	private $logger;
+	private $handler;
 
 	function __construct($base_url) {
 		//create a stack to store middleware
@@ -33,7 +33,8 @@ class REDCapMirthClient {
 
 		//create middleware that logs client requests and the responses it gets
 		$this->logger = new Logger('database logger');
-		$this->logger->pushHandler(new \MirthLogHandler($_REQUEST['pid']));
+		$this->handler = new \MirthLogHandler($_REQUEST['pid']);
+		$this->logger->pushHandler($this->handler);
 
 		$stack->push(
     Middleware::log(
@@ -50,13 +51,13 @@ class REDCapMirthClient {
 		try {
 				return $this->client->request($method, $extension, ['body' => $body]);
 		} catch(ConnectException $e) {
-				$response = $e->getMessage();
-				$request = $e->getRequest();
-				$method = $request->getMethod();
-				$uri = $request->getUri();
-
-				$message = "$method\\$uri\\NULL\\Unavailable\\$response";
-				$this->logger->error($message);
+				$data = [
+					'response' => $e->getMessage(),
+					'status_code' => 'ERR'
+				];
+				$this->handler->amend_last_log($data);
+		} catch(BadResponseException $e) {
+			//do nothing, middleware can handle this.
 		}
 	}
 
