@@ -6,9 +6,11 @@
 
 namespace REDCapMirthClient\ExternalModule;
 
+require_once 'REDCapMirthClient.php';
+
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
-use REDCapMirthClient;
+use REDCapMirthClient\REDCapMirthClient;
 
 /**
  * ExternalModule class for REDCap Mirth Connect Client.
