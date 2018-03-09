@@ -30,5 +30,36 @@
             "institution": "CTS-IT - University of Florida"
         }
     ],
-    "system-settings": []
+    "project-settings": [
+      {
+        "key":"log_lifetime",
+        "name":"clear logs after (days)",
+        "type":"text"
+      }
+    ],
+    "links": {
+      "project": [
+        {
+          "name": "Mirth Logs",
+          "icon": "report",
+          "url": "MirthLog.php"
+        }
+      ],
+      "control-center": [
+        {
+          "name": "Mirth Logs",
+          "icon": "report",
+          "url": "MirthLog.php"
+        }
+      ]
+    },
+    "crons": [
+		    {
+			    "cron_name": "clean_redcap_mirth_client_logs",
+			    "cron_description": "Daily cron that cleans up old logs",
+			    "method": "cleanLogs",
+			    "cron_frequency": "86400",
+			    "cron_max_run_time": "60"
+		    }
+    ]
 }
