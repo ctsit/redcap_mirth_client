@@ -21,8 +21,8 @@ class ExternalModule extends AbstractExternalModule {
    * Takes in an the base url of the API as an input.
    * returns a REDCapMirthClient object that can be used to send API requests.
    */
-  function getClient($base_url) {
-    return new REDCapMirthClient($base_url);
+  function getClient($base_url, $credidentials) {
+    return new REDCapMirthClient($base_url, $credidentials);
   }
 
   /**

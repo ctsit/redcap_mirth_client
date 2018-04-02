@@ -26,8 +26,13 @@ class REDCapMirthClient {
 	private $client;
 	private $logger;
 	private $handler;
+	private $credidentials;
 
-	function __construct($base_url) {
+	function __construct($base_url, $credidentials) {
+
+		//set credientials if provided
+		$this->credidentials = !is_null($credidentials) ? [$credidentials['username'], $credidentials['password']] : NULL;
+
 		//create a stack to store middleware
 		$stack = HandlerStack::create();
 
@@ -48,8 +53,12 @@ class REDCapMirthClient {
 	}
 
 	function request($method, $extension, $body) {
+
+		//set message body and authentication info
+		$content = ['body' => $body, 'auth' => $this->credidentials];
+
 		try {
-				return $this->client->request($method, $extension, ['body' => $body]);
+				return $this->client->request($method, $extension, $content);
 		} catch(ConnectException $e) {
 				$data = [
 					'response' => $e->getMessage(),
