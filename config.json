@@ -35,6 +35,38 @@
         "key":"log_lifetime",
         "name":"clear logs after (days)",
         "type":"text"
+      },
+      {
+        "key":"module_client_settings",
+        "name":"module endpoint",
+        "type":"sub_settings",
+        "repeatable":"true",
+        "sub_settings":[
+          {
+            "key":"module_name",
+            "name":"module name",
+            "type":"text",
+            "required": true
+          },{
+            "key":"endpoint_id",
+            "name":"endpoint ID",
+            "type":"text",
+            "required": true
+          },{
+            "key":"endpoint_url",
+            "name":"endpoint URL",
+            "type":"text",
+            "required": true
+          },{
+            "key":"endpoint_username",
+            "name":"username (optional)",
+            "type":"text"
+          },{
+            "key":"endpoint_password",
+            "name":"password (optional)",
+            "type":"password"
+          }
+        ]
       }
     ],
     "links": {
@@ -61,5 +93,8 @@
 			    "cron_frequency": "86400",
 			    "cron_max_run_time": "60"
 		    }
-    ]
+    ],
+    "compatibility": {
+        "redcap-version-min": "8.0.3"
+    }
 }
