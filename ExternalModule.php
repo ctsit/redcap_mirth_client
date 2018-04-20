@@ -45,4 +45,23 @@ class ExternalModule extends AbstractExternalModule {
     }
   }
 
+  /**
+   * Get config settings for given endpoint_id.
+   * otherwise return null;.
+   */
+  private function getEndpointConfig($endpoint_id) {
+    $settings = $this->getSubSettings('endpoint_settings');
+    $length = count($settings);
+
+    //search for setting provided
+    $setting = null;
+    for($i = 0; $i < $length; $i++) {
+      if($settings[$i]['endpoint_id'] == $endpoint_id) {
+        $setting = $settings[$i];
+        break;
+      }
+    }
+
+    return $setting;
+  }
 }

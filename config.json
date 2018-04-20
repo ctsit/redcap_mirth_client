@@ -37,17 +37,12 @@
         "type":"text"
       },
       {
-        "key":"module_client_settings",
+        "key":"endpoint_settings",
         "name":"module endpoint",
         "type":"sub_settings",
         "repeatable":"true",
         "sub_settings":[
           {
-            "key":"module_name",
-            "name":"module name",
-            "type":"text",
-            "required": true
-          },{
             "key":"endpoint_id",
             "name":"endpoint ID",
             "type":"text",
