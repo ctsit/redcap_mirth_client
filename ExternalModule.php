@@ -61,7 +61,7 @@ class ExternalModule extends AbstractExternalModule {
 
   /**
    * Get config settings for given endpoint_id.
-   * otherwise return null;.
+   * otherwise return null.
    */
   private function getEndpointConfig($endpoint_id) {
     $settings = $this->getSubSettings('endpoint_settings');
