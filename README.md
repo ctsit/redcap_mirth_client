@@ -12,7 +12,7 @@ This is a REDCap external module that allows other modules to communicate with t
 - Go to **Control Center > Manage External Modules** and enable the REDCap Mirth Connect Client.
 
 ## Configuration
-Access **Manage External Modules** page on your project. Click on the **Configure**  button associated with this module. There you can set the lifetime(in days) of the log entries this module keeps.
+Access **Manage External Modules** page on your project. Click on the **Configure**  button associated with this module. There you can set the lifetime(in days) of the log entries this module keeps. Also you can setup the endpoints the modules on this project are able to access. You must provide each endpoint with at least an ID and a URL. A username and password can be provided as well if the endpoint requires authentication.
 
 ![Screen shot of configuration page](img/config_page.png)
 
@@ -22,7 +22,7 @@ Here is an example of a request sending a json message to a channel.
 ```php
 <?php
 //prepare needed information
-$base_url = 'http://127.0.0.1:8002/api';
+$endpoint_id = 'mirth_connect';
 $extension = '/channels/<channel id>/messages';
 $json = array(
   "application_sending" => "REDCAP-mirth",
@@ -39,7 +39,7 @@ $json = json_encode($json);
 
 //create client
 $client_module = \ExternalModules\ExternalModules::getModuleInstance('redcap_mirth_client', 'v1.0');
-$client = $client_module->getClient($base_url);
+$client = $client_module->getClient($endpoint_id);
 
 //send JSON
 $client->request('POST', $extension, $json);
