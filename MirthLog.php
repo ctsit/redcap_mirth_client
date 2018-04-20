@@ -92,7 +92,7 @@ while($row = $result->fetch_assoc()) {
         </div>
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">Response</label>
-          <div class="col-sm-10"><pre><?= $log['response'] ?></pre></div>
+          <div class="col-sm-10"><pre><?= htmlspecialchars($log['response']) ?></pre></div>
         </div>
       </div>
       <div class="modal-footer">

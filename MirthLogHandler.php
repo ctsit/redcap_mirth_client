@@ -10,7 +10,7 @@ class MirthLogHandler extends AbstractProcessingHandler {
 
   public function __construct($project_id, $level = Logger::INFO, $bubble = true) {
     parent::__construct($level, $bubble);
-    $this->initialize();
+    $this->create_database();
     $this->project_id = $project_id;
   }
 
@@ -62,7 +62,7 @@ class MirthLogHandler extends AbstractProcessingHandler {
     return "INSERT INTO redcap_mirth_client_log (project_id, method, uri, status_code, request, response, datetime) VALUES ('$project_id', '$method', '$uri', '$status_code', '$request', '$response', '$datetime')";
   }
 
-  private function initialize() {
+  private function create_database() {
     AbstractExternalModule::query("CREATE TABLE IF NOT EXISTS redcap_mirth_client_log (
         project_id INTEGER,
         method VARCHAR(7),
