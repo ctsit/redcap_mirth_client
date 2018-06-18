@@ -72,13 +72,7 @@
           "url": "MirthLog.php"
         }
       ],
-      "control-center": [
-        {
-          "name": "Mirth Logs",
-          "icon": "report",
-          "url": "MirthLog.php"
-        }
-      ]
+      "control-center": []
     },
     "crons": [
 		    {

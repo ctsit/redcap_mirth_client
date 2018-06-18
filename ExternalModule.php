@@ -6,7 +6,8 @@
 
 namespace REDCapMirthClient\ExternalModule;
 
-require_once 'REDCapMirthClient.php';
+require_once dirname(__FILE__) . '/REDCapMirthClient.php';
+require_once dirname(__FILE__) . '/vendor/autoload.php';
 
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
