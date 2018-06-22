@@ -6,7 +6,8 @@
 
 namespace REDCapMirthClient\ExternalModule;
 
-require_once 'REDCapMirthClient.php';
+require_once dirname(__FILE__) . '/REDCapMirthClient.php';
+require_once dirname(__FILE__) . '/vendor/autoload.php';
 
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
@@ -21,8 +22,22 @@ class ExternalModule extends AbstractExternalModule {
    * Takes in an the base url of the API as an input.
    * returns a REDCapMirthClient object that can be used to send API requests.
    */
-  function getClient($base_url) {
-    return new REDCapMirthClient($base_url);
+  function getClient($endpoint_id) {
+
+    //get configuration for endpoint id
+    $config = $this->getEndpointConfig($endpoint_id);
+
+    //return null if not given a valid endpoint_id
+    if(is_null($config)) {
+      return null;
+    }
+
+    //otherwise prepare arguments for generating a new REDCapMirthClient
+    $credentials = ["username" => $config['endpoint_username'],
+                    "password" => $config['endpoint_password']];
+    $endpoint_url = $config['endpoint_url'];
+
+    return new REDCapMirthClient($endpoint_url, $credentials);
   }
 
   /**
@@ -45,4 +60,23 @@ class ExternalModule extends AbstractExternalModule {
     }
   }
 
+  /**
+   * Get config settings for given endpoint_id.
+   * otherwise return null.
+   */
+  private function getEndpointConfig($endpoint_id) {
+    $settings = $this->getSubSettings('endpoint_settings');
+    $length = count($settings);
+
+    //search for setting provided
+    $setting = null;
+    for($i = 0; $i < $length; $i++) {
+      if($settings[$i]['endpoint_id'] == $endpoint_id) {
+        $setting = $settings[$i];
+        break;
+      }
+    }
+
+    return $setting;
+  }
 }
